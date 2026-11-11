@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "description": "Ordered rules for the vendor approval demonstration. First matching rule wins.",
+  "rules": [
+    {
+      "id": "R001_MISSING_TAX_CERTIFICATE",
+      "conditions": [
+        {
+          "field": "documents",
+          "operator": "not_contains",
+          "value": "tax_certificate"
+        }
+      ],
+      "decision": "MANUAL_REVIEW",
+      "reason": "Tax certificate is missing; manual document verification is required."
+    },
+    {
+      "id": "R002_HIGH_RISK_REJECT",
+      "conditions": [
+        {
+          "field": "risk_score",
+          "operator": "gt",
+          "value": 80
+        }
+      ],
+      "decision": "REJECTED",
+      "reason": "Risk score is above the configured rejection threshold."
+    },
+    {
+      "id": "R003_LOW_RISK_APPROVE",
+      "conditions": [
+        {
+          "field": "risk_score",
+          "operator": "lte",
+          "value": 30
+        },
+        {
+          "field": "annual_revenue",
+          "operator": "gte",
+          "value": 100000
+        }
+      ],
+      "decision": "APPROVED",
+      "reason": "Low risk and minimum revenue requirements are satisfied."
+    },
+    {
+      "id": "R004_MEDIUM_RISK_REVIEW",
+      "conditions": [
+        {
+          "field": "risk_score",
+          "operator": "lte",
+          "value": 80
+        }
+      ],
+      "decision": "MANUAL_REVIEW",
+      "reason": "Vendor falls within the manual review risk band."
+    }
+  ],
+  "default": {
+    "decision": "MANUAL_REVIEW",
+    "reason": "No configured rule matched."
+  }
+}
